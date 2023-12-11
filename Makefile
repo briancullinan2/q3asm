@@ -28,6 +28,13 @@ ifeq ($(USE_CCACHE),1)
   CXX := ccache $(CXX)
 endif
 
+ifndef STRIP
+STRIP := strip
+endif
+ifeq ($(STRIP),)
+STRIP := strip
+endif
+
 default: q3asm
 
 q3asm: q3asm.c q3vm.c cmdlib.c
@@ -37,7 +44,9 @@ clean:
 	rm -f q3asm *~ *.o
 
 install: default
-	$(INSTALL) -s -m 0755 q3asm$(BINEXT) ../
+	$(INSTALL) -D -m 0755 q3asm$(BINEXT) "$(DESTDIR)/q3asm$(BINEXT)"
+	ls -la $(DESTDIR)
+	$(STRIP) "$(DESTDIR)/q3asm$(BINEXT)";
 
 uninstall:
 	rm -f ../q3asm$(BINEXT)
